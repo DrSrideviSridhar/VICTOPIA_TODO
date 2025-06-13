@@ -1,0 +1,123 @@
+{% extends "base.html" %} 
+{% block title %}My Tasks{% endblock %}
+ {% block content %}
+<h2>My Tasks</h2>
+
+{% if messages %}
+<div class="messages">
+  {% for message in messages %}
+  <div class="message-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<p><a href="{% url 'task_create' %}">➕ New Task</a></p>
+
+<div class="tasks-container">
+  <div class="tasks-list">
+    <h3>My Tasks</h3>
+    <ul>
+      {% for task in object_list %}
+      <li class="task-item {% if task.completed %}completed{% endif %}">
+        <div class="task-header">
+          {% if task.completed %}✅{% else %}📋{% endif %}
+          <strong>{{ task.title }}</strong>
+          <div class="task-actions">
+            <a href="{% url 'task_edit' task.pk %}">edit</a>
+            <a href="{% url 'task_delete' task.pk %}">delete</a>
+          </div>
+        </div>
+      </li>
+      {% empty %}
+      <li>No tasks yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  {% if ai_prioritization %}
+  <div class="ai-prioritization">
+    <h3>✨ AI-Recommended Priority</h3>
+    <div class="ai-priority-content">{{ ai_prioritization|linebreaks }}</div>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .tasks-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .tasks-list {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .ai-prioritization {
+    flex: 1;
+    min-width: 300px;
+    background-color: #f8f9fa;
+    color: black;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #6c5ce7;
+  }
+
+  .task-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .task-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .completed {
+    background-color: #f0fff0;
+  }
+
+  .ai-badge {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    background-color: #6c5ce7;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7em;
+  }
+
+  .messages {
+    margin-bottom: 15px;
+  }
+
+  .message-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .message-error,
+  .message-warning {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+</style>
+{% endblock %}
